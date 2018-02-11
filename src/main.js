@@ -5,6 +5,7 @@ import App from './App'
 import Results from './components/Results'
 import SearchBar from './components/SearchBar'
 import router from './router'
+import store from './store'
 // axiosインポート
 import axios from 'axios'
 
@@ -18,6 +19,7 @@ const eventHub = global.eventHub = new Vue();
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
+  store,
   router,
   components: {App},
   data: {
@@ -32,6 +34,9 @@ new Vue({
         this.items = res.data.results
       })
     })
+  },
+  mounted() {
+    console.log(store.state.searchText)
   }
 
 })

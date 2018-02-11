@@ -2,9 +2,10 @@
   <div>
       <input type="text" v-model="searchText" placeholder="アーティスト名">
       <input type="submit" @click="search">
-      <p>{{searchText}}</p>
-      <p>{{fixSearchText}}</p>
-      <p>{{watchedSearchText}}</p>
+      <p>v-model：{{searchText}}</p>
+      <p>computed：{{fixSearchText}}</p>
+      <p>watch：{{watchedSearchText}}</p>
+      <p>State：{{searchTextState}}</p>
   </div>
 </template>
 
@@ -20,13 +21,16 @@ export default {
   //computedはマウント時に(変更前から)実行される(関数だけど値を返す)
   computed: {
     fixSearchText: function() {
-      return 'computed：' + this.searchText
+      return this.searchText
+    },
+    searchTextState: function() {
+      return this.$store.getters.searchTextGetter
     }
   },
   //watchは変更されてから実行される(関数)
   watch: {
     searchText:function(val) {
-      // this.watchedSearchText = 'watch：' + val
+      this.watchedSearchText = val
 
       //searchTextが変更されるたびにsearchメソッドを実行する(インクリメント検索)
       this.search()
@@ -42,10 +46,10 @@ export default {
         eventHub.$emit('search',{
           'searchText': this.searchText
         });
-
         localStorage.setItem('searchText', this.searchText)
         this.searchText = localStorage.getItem('searchText')
         // console.log(localStorage.getItem('searchText'))
+        this.$store.commit('searchTextStore',this.searchText)
       }
     }
   }
